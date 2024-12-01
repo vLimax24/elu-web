@@ -8,6 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Label } from "@/components/ui/label"
 import { SidebarLink } from "./SidebarLink"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
+import { XPBar } from "./XPBar"
 import {
   Tooltip,
   TooltipContent,
@@ -29,7 +31,6 @@ import { motion, AnimatePresence } from "framer-motion"
 
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -140,7 +141,7 @@ const data = {
 
 export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useUser()
-  if (user) console.log(user)
+  const router = useRouter()
 
   return (
     <Sidebar {...props} className="!border-l-0 !border-r-0 pt-3 pl-2">
@@ -176,7 +177,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button className="aspect-square dark:bg-transparent dark:hover:bg-gray-200/10 bg-gray-100" size={"iconSmall"}>
+                      <Button className="aspect-square dark:bg-transparent dark:hover:bg-gray-200/10 bg-gray-100" size={"iconSmall"} onClick={() => router.push("/dashboard")}>
                         <Home className="text-[#858587]"/>
                       </Button>
                     </TooltipTrigger>
@@ -204,7 +205,6 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
                       <p className="text-white">Theme</p>
                     </TooltipContent>
                   </Tooltip>
-                  
                 </TooltipProvider>
               </div>
             </div>
@@ -212,6 +212,8 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
+        <>
+        <XPBar />
         {data.navMain.map((item) => (
           <Collapsible defaultOpen className="group/collapsible" key={item.title}>
             <SidebarGroup>
@@ -253,6 +255,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
             </SidebarGroup>
           </Collapsible>
         ))}
+        </>
       </SidebarContent>
     </Sidebar>
   )

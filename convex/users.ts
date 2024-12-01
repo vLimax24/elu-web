@@ -1,6 +1,6 @@
 import { v, ConvexError } from "convex/values"
 import { internalQuery, internalMutation } from "./_generated/server"
-import { authMutation, authQuery } from "./util"
+import { authQuery } from "./util"
 
 export const getUserById = internalQuery({
     args: { userId: v.string() },
@@ -13,6 +13,11 @@ export const getUserById = internalQuery({
         return user
     },
 })
+
+export const getMyUser = authQuery({
+    args: {},
+    handler: async ctx => ctx.user,
+  })
 
 export const createUser = internalMutation({
     args: {
