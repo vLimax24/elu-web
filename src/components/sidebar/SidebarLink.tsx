@@ -11,8 +11,8 @@ type SidebarLinkProps = {
 
 export const SidebarLink = ({ iconName, labelText, iconColor }: SidebarLinkProps) => {
     return (
-        <div className='flex flex-row items-center gap-4 hover:cursor-pointer hover:bg-gray-200/50 pl-2 pr-4 py-1 rounded-md'>
-            <IconWithBackground name={iconName} size={18} color={iconColor} id={iconName} />
+        <div className='flex flex-row items-center gap-4 hover:cursor-pointer hover:bg-gray-200/10 pl-2 pr-4 py-1 rounded-md'>
+            <IconWithBackground name={iconName} size={15.5} color={iconColor} id={iconName} />
             <Label htmlFor={iconName} className="text-white">{labelText}</Label>
         </div>
     )

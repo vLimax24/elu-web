@@ -1,28 +1,31 @@
 'use client'
 
 import * as React from "react"
-import { GalleryVerticalEnd } from "lucide-react"
 import { ThemeToggle } from "@/components/core/ThemeToggle"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, icons, Home, Settings } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Label } from "@/components/ui/label"
+import { SidebarLink } from "./SidebarLink"
+import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarRail,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
+import { motion, AnimatePresence } from "framer-motion"
 
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 
@@ -30,137 +33,105 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 const data = {
   navMain: [
     {
-      title: "Getting Started",
+      title: "Focus",
       url: "#",
       items: [
         {
-          title: "Installation",
+          title: "Pomodoro Timer",
           url: "#",
+          iconName: "GraduationCap",
+          IconColor: "#FF44DD",
         },
         {
-          title: "Project Structure",
+          title: "52/17 Technique",
           url: "#",
+          iconName: "Clock11",
+          IconColor: "#0077D8",
+        },
+        {
+          title: "5-10-15 Technique",
+          url: "#",
+          iconName: "RotateCw",
+          IconColor: "#00FF00",
         },
       ],
     },
     {
-      title: "Building Your Application",
+      title: "Quests",
       url: "#",
       items: [
         {
-          title: "Routing",
+          title: "Main Quests",
           url: "#",
+          iconName: "Swords",
+          IconColor: "#A927FF",
         },
         {
-          title: "Data Fetching",
+          title: "Daily Quests",
           url: "#",
           isActive: true,
-        },
-        {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
+          iconName: "Repeat",
+          IconColor: "#D35800",
         },
       ],
     },
     {
-      title: "API Reference",
+      title: "Rewards",
       url: "#",
       items: [
         {
-          title: "Components",
+          title: "Leaderboard (Coming Soon)",
           url: "#",
+          iconName: "Trophy",
+          IconColor: "#7A7A7A",
         },
         {
-          title: "File Conventions",
+          title: "Achievements",
           url: "#",
+          iconName: "Medal",
+          IconColor: "#3DD68C",
         },
         {
-          title: "Functions",
+          title: "XP",
           url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
+          iconName: "Star",
+          IconColor: "#009DFF",
         },
       ],
     },
     {
-      title: "Architecture",
+      title: "Customization",
       url: "#",
       items: [
         {
-          title: "Accessibility",
+          title: "Themes (Coming Soon)",
           url: "#",
+          iconName: "Paintbrush",
+          IconColor: "#7A7A7A",
         },
         {
-          title: "Fast Refresh",
+          title: "Avatars",
           url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
+          iconName: "SquareUserRound",
+          IconColor: "#00D8B4",
         },
       ],
     },
     {
-      title: "Community",
+      title: "Analytics",
       url: "#",
       items: [
         {
-          title: "Contribution Guide",
+          title: "Activity",
           url: "#",
+          iconName: "Activity",
+          IconColor: "#3DD68C",
+        },
+        {
+          title: "Share Stats",
+          url: "#",
+          iconName: "Send",
+          IconColor: "#1A00FF",
         },
       ],
     },
@@ -168,12 +139,11 @@ const data = {
 }
 
 export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
-  const { user, isLoaded } = useUser()
-  if (user) { console.log(user) }
+  const { user } = useUser()
+  if (user) console.log(user)
 
   return (
-    <Sidebar {...props}>
+    <Sidebar {...props} className="!border-l-0 !border-r-0 pt-3 pl-2">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -181,13 +151,62 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
               <SidebarMenuButton size="default" asChild className="w-fit mr-4">
                 <div className="py-4">
                   <div className="flex items-center gap-3">
-                    {user ? <Image src={user.imageUrl} alt="pb" width={25} height={25} className="rounded-md" id="image-profile" /> : <Skeleton className="size-[25px] rounded-md" />}
-                    {user ? <Label htmlFor="image-profile">{user.fullName}</Label> : <Skeleton className="w-12 h-3" />}
+                    {user ? (
+                      <Image
+                        src={user.imageUrl}
+                        alt="pb"
+                        width={25}
+                        height={25}
+                        className="rounded-md"
+                        id="image-profile"
+                      />
+                    ) : (
+                      <Skeleton className="size-[25px] rounded-md" />
+                    )}
+                    {user ? (
+                      <Label htmlFor="image-profile" className="text-white">{user.fullName}</Label>
+                    ) : (
+                      <Skeleton className="w-12 h-3" />
+                    )}
                   </div>
-                  <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  {user && <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />}
                 </div>
               </SidebarMenuButton>
-              <ThemeToggle />
+              <div className="flex items-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button className="aspect-square dark:bg-transparent dark:hover:bg-gray-200/10 bg-gray-100" size={"iconSmall"}>
+                        <Home className="text-[#858587]"/>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-[#1d1b1b]">
+                      <p className="text-white">Home</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button className="aspect-square dark:bg-transparent dark:hover:bg-gray-200/10 bg-gray-100" size={"iconSmall"}>
+                        <Settings className="text-[#858587]"/>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-[#1d1b1b]">
+                      <p className="text-white">Settings</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="aspect-square dark:bg-transparent dark:hover:bg-gray-200/10 bg-gray-100">
+                        <ThemeToggle />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-[#1d1b1b]">
+                      <p className="text-white">Theme</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  
+                </TooltipProvider>
+              </div>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -199,27 +218,42 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
               <SidebarGroupLabel asChild>
                 <CollapsibleTrigger>
                   {item.title}
-                  <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180 duration-300" />
                 </CollapsibleTrigger>
               </SidebarGroupLabel>
-              <CollapsibleContent>
-                {item.items?.length ? (
-                  <SidebarMenuSub>
-                    {item.items.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
-                          <a href={item.url}>{item.title}</a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                ) : null}
-              </CollapsibleContent>
+              <AnimatePresence initial={false}>
+                {item.items && (
+                  <CollapsibleContent>
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      {item.items.map((subItem, index) => (
+                        <motion.div
+                          key={subItem.title}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2, delay: index * 0.05 }}
+                        >
+                          <SidebarLink
+                            labelText={subItem.title}
+                            iconName={subItem.iconName as keyof typeof icons}
+                            iconColor={subItem.IconColor}
+                          />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </CollapsibleContent>
+                )}
+              </AnimatePresence>
             </SidebarGroup>
           </Collapsible>
         ))}
       </SidebarContent>
-      <SidebarRail />
     </Sidebar>
   )
 }
